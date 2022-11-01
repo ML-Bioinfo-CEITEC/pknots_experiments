@@ -1,11 +1,24 @@
 # Knotted Proteins Experiments
 
-1) [**DistilProtBert** finetuning](fine-tuning/): [DistilProtBert](https://huggingface.co/yarongef/DistilProtBert) model fine-tuned only 1/2 epoch on SPOUT (*SPOUT_knotted.csv*) vs. Rossmann (*Rossmann.csv*) families, uploaded to [🤗 Hub](https://huggingface.co/simecek/knotted_proteins_demo_model) and tested on several other families 
+So far, we have three different models, two kinds of visualizations (getting insight into the data) and two ways of interpretation.
+## Models
 
-2) [**ProtBertBFD** embeddings](tsne-visualization/): we have calculated [ProtBertBFD](https://huggingface.co/Rostlab/prot_bert_bfd) protein-level embeddings for on SPOUT and Rossmann families, got t-SNE visualizations and trained a [small CNN classifier](https://github.com/ML-Bioinfo-CEITEC/pknots_experiments/tree/main/CNN-on-embeddings) (accuracy >0.997)
+1) [**DistilProtBert** finetuning](fine-tuning/) (**M1**): [DistilProtBert](https://huggingface.co/yarongef/DistilProtBert) model fine-tuned only 1/2 epoch on SPOUT (*SPOUT_knotted.csv*) vs. Rossmann (*Rossmann.csv*) families during the trip to Warsaw, uploaded to [🤗 Hub](https://huggingface.co/simecek/knotted_proteins_demo_model) and tested on several other families. This approach is the most promising but needs large GPU and computational resources.
 
-3) **Interpretability**: we are working on BERT-like transformers interpretability, i.e. which part of the sequence contributed to the decision, it is still [a work in progress](https://github.com/ML-Bioinfo-CEITEC/cDNA-pretraining/tree/main/experiments/interpretability)
+2) [CNN on **ProtBertBFD** embeddings](tsne-visualization/) (**M2**): we have calculated [ProtBertBFD](https://huggingface.co/Rostlab/prot_bert_bfd) protein-level embeddings for on SPOUT and Rossmann families, got t-SNE visualizations and trained a [small CNN classifier](https://github.com/ML-Bioinfo-CEITEC/pknots_experiments/tree/main/CNN-on-embeddings) (accuracy >0.997) This approach needs to calculate embedings (=time) but after that the model is simple and small.
 
-4) [**Simple CNN and Integrated Gradients**](https://github.com/ML-Bioinfo-CEITEC/pknots_experiments/tree/main/CNN-integrated-gradients): we created a simple Convoluational Neural Network trained on SPOUT x Rossmann. The CNN performs similarly to the previous models but is much smaller, easier to train and should be easier to interpret. We also tried Integrated Gradients interpretation method, you can try it [here](https://github.com/ML-Bioinfo-CEITEC/pknots_experiments/blob/main/CNN-integrated-gradients/Integrated_Gradients.ipynb)
+3) [**Simple CNN**](https://github.com/ML-Bioinfo-CEITEC/pknots_experiments/tree/main/CNN-integrated-gradients) (**M3**): we created a simple Convoluational Neural Network trained on SPOUT x Rossmann. The CNN performs similarly to the previous models but is much smaller, easier to train and should be easier to interpret. This is approach is likely to work even on your personal computer but might 
+
+## Visualizations
+
+1) Dimensionality reduction technique: We have calculated **t-SNE*** on ProtBertBFD protein-level embeddings for on SPOUT and Rossmann families. You can see that ProtBertBFD embeddings cluster knotted vs unknotted proteins on [t-SNE plot](tsne-visualization/tsne_knots_spout.png) much better that randomized model [embeddings t-SNE](tsne-visualization/tsne_randomized_weights.png).
+
+2) Alternativaly, we have tried **PCA plot** on the same ProtBertBFD protein-level embeddings. Again, [PCA plot]() seem to distinguish knotted vs unknotted proteins (PCA1).
+
+## Interpretation
+
+1) **Captum**: we are working on BERT-like transformers interpretability, i.e. which part of the sequence contributed to the decision, it is still [a work in progress](https://github.com/ML-Bioinfo-CEITEC/cDNA-pretraining/tree/main/experiments/interpretability) using [Captum](https://levelup.gitconnected.com/huggingface-transformers-interpretability-with-captum-28e4ff4df234) library.
+
+2) We also tried **Integrated Gradients** on M3 CNN model, you can see it [here](https://github.com/ML-Bioinfo-CEITEC/pknots_experiments/blob/main/CNN-integrated-gradients/Integrated_Gradients.ipynb)
 
 **If you want to be able to push to this repo (to add your code)**, email Petr (*simecek -at- mail.muni.cz*).
