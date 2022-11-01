@@ -13,7 +13,7 @@ So far, we have three different models, two kinds of visualizations (getting ins
 
 1) Dimensionality reduction technique: We have calculated **t-SNE*** on ProtBertBFD protein-level embeddings for on SPOUT and Rossmann families. You can see that ProtBertBFD embeddings cluster knotted vs unknotted proteins on [t-SNE plot](tsne-visualization/tsne_knots_spout.png) much better that randomized model [embeddings t-SNE](tsne-visualization/tsne_randomized_weights.png).
 
-2) Alternativaly, we have tried **PCA plot** on the same ProtBertBFD protein-level embeddings. Again, [PCA plot]() seem to distinguish knotted vs unknotted proteins (PCA1).
+2) Alternativaly, we have tried **PCA plot** on the same ProtBertBFD protein-level embeddings. Again, [PCA plot](pca/) seem to distinguish knotted vs unknotted proteins (PCA1).
 
 ## Interpretation
 
