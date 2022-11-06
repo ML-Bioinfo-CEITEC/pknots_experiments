@@ -17,7 +17,7 @@ So far, we have three different models, two kinds of visualizations (getting ins
 
 ## Interpretation
 
-1) **Captum**: we are working on BERT-like transformers interpretability, i.e. which part of the sequence contributed to the decision, it is still [a work in progress](https://github.com/ML-Bioinfo-CEITEC/cDNA-pretraining/tree/main/experiments/interpretability) using [Captum](https://levelup.gitconnected.com/huggingface-transformers-interpretability-with-captum-28e4ff4df234) library.
+1) **Captum**: we are working on BERT-like transformers interpretability, i.e. which part of the sequence contributed to the decision using the [Captum](https://levelup.gitconnected.com/huggingface-transformers-interpretability-with-captum-28e4ff4df234) library. We began applying **Integrated Gradients** along with other visualizations on [DNABert](https://github.com/ML-Bioinfo-CEITEC/cDNA-pretraining/tree/main/experiments/interpretability) model. Then we tried to apply to same approach on DistilProtBert, it is still [a work in progress](https://github.com/ML-Bioinfo-CEITEC/pknots_experiments/tree/main/DistilProtBert-interpretability) due to memory issues.
 
 2) We also tried **Integrated Gradients** on M3 CNN model, you can see it [here](https://github.com/ML-Bioinfo-CEITEC/pknots_experiments/blob/main/CNN-integrated-gradients/Integrated_Gradients.ipynb)
 
