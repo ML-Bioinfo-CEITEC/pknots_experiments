@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-This script is used for getting predictions for patched versions of sequences that are given in an input CSV file. 
+For each sequence in the input CSV file, the predictions for it's patched versions are calculated and then saved to an output CSV file. 
 
 Sample format of the CSV file:
  sequence,knot_start,knot_end
@@ -10,16 +10,22 @@ Sample format of the CSV file:
  ANN...,100,211
  ...
 
-For each sequence it's patched versions are generated (patch sizes can be specified by providing the --patch_sizes argument). 
-Patch is simply a moving block of PATCH_CHAR repeated patch_size-times from left to right of the sequence (overlap step can be 
+The patch is simply a moving block of PATCH_CHAR repeated patch_size-times from left to right of the sequence (overlap step can be 
 changed). 
 
 Output currently contains positions and predictions of overall minimum predictions for each patch size.
 
-Usage with all arguments:
-$ python3 generate_patches.py --patch_sizes 10 50 80 200 --start_index 1 --input_path <INPUT_PATH> --append --output_path <OUTPUT_PATH>
+Basic usage:
+$ python3 generate_patches.py --patch_sizes 10 50 80 200 --input_path <INPUT_PATH> --output_path <OUTPUT_PATH>
 
-The script outputs the computation progress by specifying the number of processed and remaining sequences.
+Usage of arguments if it is supposed to be appended to the output file instead of outputting predictions to a new file:
+(for cases when the computations suddenly stops so that it is possibly to continue on from that exact sequence)
+$ python3 generate_patches.py --patch_sizes 10 50 80 200 --start_index 42 --input_path <INPUT_PATH> --append --output_path <OUTPUT_PATH>
+
+Usage if sequences with length < 500 are supposed to be padded to length 500:
+$ python3 generate_patches.py --patch_sizes 10 50 80 200 --input_path <INPUT_PATH> --output_path <OUTPUT_PATH> --fix_length
+
+The script displayes the computation progress by printing out the number of processed and remaining sequences.
 """
 
 import argparse
@@ -89,13 +95,14 @@ def generate_header_text(patch_sizes):
     return header_text
 
 
-# def fix_sequence_size(seq):
-#     if len(seq) < SEQ_DIM:
-#         seq += 'X' * (SEQ_DIM-len(seq))
-#     return seq
+def fix_sequence_size(seq):
+    if len(seq) < SEQ_DIM:
+        seq += 'X' * (SEQ_DIM-len(seq))
+    return seq
 
 
 def patch_sequence(sequence, patch_size, overlap_step, patch_char):
+    # move patch of given size from left to right of the sequence
     interval_starts = [0]
     interval_ends = [0]
     patched_sequences = [sequence]
@@ -123,6 +130,7 @@ def create_generator(list_of_arrays):
 
 
 def get_patch_predictions(model, sequence, patch_size, overlap_step, patch_char=PATCH_CHAR):
+    # generate patched versions of a given sequence and calculate all the predictions
     interval_starts, interval_ends, patched_sequences = patch_sequence(sequence, patch_size, overlap_step, patch_char)
     encoded_sequences = [encode_sequence(_) for _ in patched_sequences]
     dataset = tf.data.Dataset.from_generator(lambda: create_generator(encoded_sequences), output_types= tf.float32)
@@ -143,8 +151,6 @@ def calculate_one_seq_results(model, sequence, patches, overlap_step=1):
 
         # get index of the sequence which resulted in the lowest prediction score:
         min_i = df_scores['prediction'].idxmin()
-        
-        # additional_intervals = calculate_additional_interval(df_scores)
         text += f'{str(df_scores["prediction"].tolist())};{df_scores.iloc[min_i]["interval_start"]};{df_scores.iloc[min_i]["interval_end"]};{df_scores.iloc[min_i]["prediction"]};'
     return text
 
@@ -158,6 +164,7 @@ def define_arguments():
     parser = argparse.ArgumentParser()
     
     parser.add_argument('-ps', '--patch_sizes', nargs='+', type=int, default=[10, 50, 80, 200])
+    parser.add_argument('-fl', '--fix_length', help='Use if input sequences are supposed to be padded to length 500.', action='store_true')
     parser.add_argument('-i', '--input_path', help='Input CSV path', type=str, default='/home/jovyan/data/proteins/cores_spout_test.csv')
     parser.add_argument('-si', '--start_index', help='Start index of first processed sequence from CSV file', type=int, default=1)
     parser.add_argument('-a', '--append', help='Append results to the output file content (default is overwriting)', action='store_true')
@@ -197,7 +204,8 @@ if __name__ == '__main__':
             print(f'Sequence (i={i}) is too long (len={len(sequence)}), skipping.\n')
             continue
 
-        # sequence = fix_sequence_size(sequence)
+        if args.fix_length:
+            sequence = fix_sequence_size(sequence)
         text = calculate_one_seq_results(model, sequence, patch_sizes)
         text += f'{data[i][KNOT_START]};{data[i][KNOT_END]}'
         
