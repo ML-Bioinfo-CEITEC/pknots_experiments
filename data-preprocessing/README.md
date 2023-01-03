@@ -39,6 +39,7 @@ Applied to the previous clustered dataset, we have 205 994 sequences in total.
 ## 3) Adding IPRO and PFAM names
 
 **Input** `length_normalized_VERSION.csv.gz` (length-normalized)
+
 **Output** `families_added_VERSION.csv.gz` (with added IPRO and PFAM)
 
 Part of the given dataset may not contain information about IPRO and PFAM family, so use [add_ipro_and_pfam_family.ipynb](add_ipro_and_pfam_family.ipynb) to add it. It uses spyprot and searches Uniprot with sequence IDs and extracts information about their PFAM and IPRO family. To be consistent, it recomputes the families for all proteins. 
@@ -49,6 +50,7 @@ The ID column is modified to contain the pure Uniprot ID ('AF-' prefix and '-F1'
 ## 4) Splitting to train and test dataset
 
 **Input** `families_added_VERSION.csv.gz` (with families)
+
 **Output** dataset uploaded to Hugging Face
 
 Use [split_dataset_train_test.ipynb](split_dataset_train_test.ipynb) to split the processed dataset into train and test set ready for model training and testing. The split is done randomly so far. The prepared dataset is then uploaded to Hugging Face.
