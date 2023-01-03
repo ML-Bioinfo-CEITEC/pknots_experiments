@@ -6,6 +6,10 @@ Raw data have been obtained from Pawel through the link in the main doc. Based o
 
 ## 1) Clutering
 
+**Input:** `spout_all_unknotted.csv.gz`, `spout_all_knotted.csv.gz` (raw data)
+
+**Output:** `clustered_VERSION.csv.gz` (data after length filter and clustering)
+
 We only consider proteins with the minimal length 70 (since the shortest knotted protein is 67aa) and the maximal length 1000 (to avoid problems with transformers).
 
 For clustering we use CD-HIT 4.8.1 (Aug 2021) and the following parameters
