@@ -4,10 +4,6 @@
 
 Raw data have been obtained from Pawel through the link in the main doc. Based on David's Uniprot ids, it collects knotted proteins (i.e. proteins present in AlphaKnot) and unknotted proteins (not present in AlphaKnot and pLDDT > 0.7). The names of the files `spout_all_knotted.csv.gz` (MD5 da068dc4eb2ef7f5799464a32d3dca85) and `spout_all_unknotted.csv.gz` (MD5 2dc831c4f180418733bcaf940239107a) are a bit misleading since it covers not only SPOUT family but other families as well.
 
-## 0) Adding IPRO and PFAM names
-
-The given dataset may not contain information about IPRO and PFAM family, so use [add_ipro_and_pfam_family.ipynb](add_ipro_and_pfam_family.ipynb). It uses spuprot and searches Uniprot with sequence IDs and extracts information about their PFAM and IPRO family.
-
 ## 1) Clustering
 
 **Input:** `spout_all_unknotted.csv.gz`, `spout_all_knotted.csv.gz` (raw data)
@@ -34,4 +30,27 @@ We want to have similar length distribution for knotted and unknotted proteins. 
 
 We are now doing the length comparison not strictly but in bins of size 5.
 
+The script also adds a 'label' column for easier later recognition of knotted and unknotted proteins.
+
 Applied to the previous clustered dataset, we have 205 994 sequences in total.
+
+
+
+## 3) Adding IPRO and PFAM names
+
+**Input** `length_normalized_VERSION.csv.gz` (length-normalized)
+**Output** `families_added_VERSION.csv.gz` (with added IPRO and PFAM)
+
+Part of the given dataset may not contain information about IPRO and PFAM family, so use [add_ipro_and_pfam_family.ipynb](add_ipro_and_pfam_family.ipynb) to add it. It uses spyprot and searches Uniprot with sequence IDs and extracts information about their PFAM and IPRO family. To be consistent, it recomputes the families for all proteins. 
+
+The ID column is modified to contain the pure Uniprot ID ('AF-' prefix and '-F1' suffix is deleted)
+
+
+## 4) Splitting to train and test dataset
+
+**Input** `families_added_VERSION.csv.gz` (with families)
+**Output** dataset uploaded to Hugging Face
+
+Use [split_dataset_train_test.ipynb](split_dataset_train_test.ipynb) to split the processed dataset into train and test set ready for model training and testing. The split is done randomly so far. The prepared dataset is then uploaded to Hugging Face.
+
+The current processed version of the dataset can be found at [Hugging Face](https://huggingface.co/datasets/EvaKlimentova/knots_AF)
