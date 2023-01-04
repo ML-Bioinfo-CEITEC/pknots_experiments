@@ -56,3 +56,5 @@ The ID column is modified to contain the pure Uniprot ID ('AF-' prefix and '-F1'
 Use [split_dataset_train_test.ipynb](split_dataset_train_test.ipynb) to split the processed dataset into train and test set ready for model training and testing. The split is done randomly so far. The prepared dataset is then uploaded to Hugging Face.
 
 The current processed version of the dataset can be found at [Hugging Face](https://huggingface.co/datasets/EvaKlimentova/knots_AF)
+
+The current dataset version is 1 - created by Pawel 4. 1., `david_all_knotted.csv.gz` (MD5 78dbab5c65422dcd7c52ffa6c427236d) and `david_all_unknotted.csv.gz` (MD5 57b822f2b93586d7d5685ccf09dcf537)
