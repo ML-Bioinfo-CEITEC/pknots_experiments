@@ -40,9 +40,9 @@ Applied to the previous clustered dataset, we have 205 994 sequences in total.
 
 **Input** `length_normalized_VERSION.csv.gz` (length-normalized)
 
-**Output** `families_added_VERSION.csv.gz` (with added IPRO and PFAM)
+**Output** `families_added_VERSION.csv.gz` (with added IPRO and PFAM and family name)
 
-Part of the given dataset may not contain information about IPRO and PFAM family, so use [add_ipro_and_pfam_family.ipynb](add_ipro_and_pfam_family.ipynb) to add it. It uses spyprot and searches Uniprot with sequence IDs and extracts information about their PFAM and IPRO family. To be consistent, it recomputes the families for all proteins. 
+Part of the given dataset may not contain information about IPRO and PFAM family, so use [add_ipro_and_pfam_family.ipynb](add_ipro_and_pfam_family.ipynb) to add it. It uses spyprot and searches Uniprot with sequence IDs and extracts information about their PFAM and IPRO family. To be consistent, it recomputes the families for all proteins. Based on InterPro code, the script then assigns to each record readable family name. This is based in Dawid's [colored table](https://docs.google.com/spreadsheets/d/1QL0biEmWIXj_t2lK7YiU-WTbVF0pWu486GjcKY1lme4/edit#gid=0).
 
 The ID column is modified to contain the pure Uniprot ID ('AF-' prefix and '-F1' suffix is deleted)
 
@@ -55,6 +55,13 @@ The ID column is modified to contain the pure Uniprot ID ('AF-' prefix and '-F1'
 
 Use [split_dataset_train_test.ipynb](split_dataset_train_test.ipynb) to split the processed dataset into train and test set ready for model training and testing. The split is done randomly so far. The prepared dataset is then uploaded to Hugging Face.
 
-The current processed version of the dataset can be found at [Hugging Face](https://huggingface.co/datasets/EvaKlimentova/knots_AF)
+The newest processed version of the dataset can be found at [Hugging Face](https://huggingface.co/datasets/EvaKlimentova/knots_AF)
 
-The current dataset version is 1 - created by Pawel 4. 1., `david_all_knotted.csv.gz` (MD5 78dbab5c65422dcd7c52ffa6c427236d) and `david_all_unknotted.csv.gz` (MD5 57b822f2b93586d7d5685ccf09dcf537)
+
+### Dataset version list
+
+Version 2 - updated by Eva 10. 1., based on Version 1 files, fixed duplication and added family names
+
+Version 1 - created by Pawel 4. 1., `david_all_knotted.csv.gz` (MD5 78dbab5c65422dcd7c52ffa6c427236d) and `david_all_unknotted.csv.gz` (MD5 57b822f2b93586d7d5685ccf09dcf537), with added PFAM and InterPro
+
+Version 0 - created by Pawel 28. 12., `spout_all_knotted.csv.gz` (MD5 da068dc4eb2ef7f5799464a32d3dca85) and `spout_all_unknotted.csv.gz` (MD5 2dc831c4f180418733bcaf940239107a), this version was missing some families
