@@ -14,9 +14,11 @@ Notebooks used to transform input data to a more suitable format or to export th
 
 [`export_knot_core_data.ipynb`](./export_knot_core_data.ipynb) - Exports only patch subsequences and knot core subsequences in FASTA format (used as input to [MEME](https://meme-suite.org/meme/tools/meme)).
 
+**New data version:** [`format_new_data_csv.ipynb`](./format_new_data_csv.ipynb) - Helper notebook to transform raw new data to a better format.
+
 ### 2. Moving patch:
 
-Script [`generate_patches.py`](./generate_patches.py) takes care of generating patches for each input sequence and calculating predictions of such 
+Script [`generate_patches.py`](./generate_patches.py) ([`generate_patches_v2.py`](./generate_patches.py) for **new data version**) takes care of generating patches for each input sequence and calculating predictions of such 
 modified sequences. 
 
 Expected input CSV format:
