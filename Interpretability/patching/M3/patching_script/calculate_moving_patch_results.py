@@ -4,18 +4,17 @@
 """
 This script is used for getting predictions for patched versions of sequences that are given in an input CSV file. 
 
-Expected format of columns in the input CSV file:
+Expected format of columns of the input CSV file:
 seq_id,sequence,global_metric_value,domain_architecture,interpro,max_knot_topology,seq_length,label,family,knot_start,knot_end,knot_len,core_percentage
- ...
 
 For each sequence it's patched versions are generated (patch sizes can be specified by providing the --patch_sizes argument). 
 Patch is simply a moving block of PATCH_CHAR repeated patch_size-times from left to right of the sequence (overlap step can be 
 changed). 
 
-Output currently contains positions and predictions of overall minimum predictions for each patch size.
+Output contains the position and prediction of overall minimum prediction for each patch size for each sequence.
 
 Usage with all arguments:
-$ python3 generate_patches_extended.py --patch_sizes 10 50 80 200 --start_index 1 --input_path <INPUT_PATH> --append --output_path <OUTPUT_PATH>
+$ python3 calculate_moving_patch_results.py --patch_sizes 20 50 80 100 200 --start_index 1 --input_path <INPUT_PATH> --append --output_path <OUTPUT_PATH>
 
 The script outputs the computation progress by specifying the number of processed and remaining sequences.
 """
@@ -59,7 +58,8 @@ nucleo_dic = {
     'X': 20
 }
 
-MODEL = '/home/jovyan/models/2023_data_v1/cnn_10epochs_94.h5'
+MODEL = '/home/jovyan/models/2023_data_v1/cnn_10epochs_94.h5'   # M3 v2
+#MODEL = '/home/jovyan/models/knots_simple_CNN/cnn_10epochs.h5'  # M3 v1
 CSV_DELIMITER = ','
 SEQ_DIM = 500
 PATCH_CHAR = 'X'
@@ -86,7 +86,7 @@ def get_data(data_csv):
 def generate_header_text(patch_sizes):
     header_text = 'id;seq;seq_len;'
     for patch_size in patch_sizes:
-        header_text += f'patch_{patch_size}_preds;patch_{patch_size}_starts;patch_{patch_size}_ends;patch_{patch_size}_min_pos_start;patch_{patch_size}_min_pos_end;patch_{patch_size}_min_pred;'
+        header_text += f'patch_{patch_size}_preds;patch_{patch_size}_starts;patch_{patch_size}_min_start;patch_{patch_size}_min_end;patch_{patch_size}_min_pred;patch_{patch_size}_min_overlap_pred;patch_{patch_size}_min_overlap_real;patch_{patch_size}_overlap;'
     header_text += 'real_start;real_end;knot_length;family\n'
     return header_text
 
@@ -97,9 +97,40 @@ def fix_sequence_size(seq):
     return seq
 
 
+################################################################################################
+######################## helper functions for calculating interval overlaps: ##################
+def calculate_score_overlap_wrt_predicted(x_start, x_end, y_start, y_end):
+    predicted_len = (x_end - x_start) if (x_end - x_start) != 0 else 1
+    return max(0, min(x_end, y_end) - max(x_start, y_start)) / predicted_len
+
+# what percentage of the actual knot core was found based on the prediction:
+def calculate_score_overlap_wrt_real(x_start, x_end, y_start, y_end):
+    real_len = (y_end - y_start) if (y_end - y_start) != 0 else 1
+    return max(0, min(x_end, y_end) - max(x_start, y_start)) / real_len
+
+
+# https://www.reddit.com/r/datascience/comments/vqtac5/metric_or_measure_of_how_well_two_time_intervals/
+# intersection over union:
+def calculate_score_overlap(x_start, x_end, y_start, y_end):
+    intersection = min(x_end, y_end)-max(x_start, y_start)
+    union = max(x_end, y_end) - min(x_start, y_start)
+    return intersection/union if union > 0 else 0
+
+def calculate_overlap_of_min_patch_with_core(x_start, x_end, y_start, y_end):
+    wrt_pred = calculate_score_overlap_wrt_predicted(x_start, x_end, y_start, y_end)
+    wrt_real = calculate_score_overlap_wrt_real(x_start, x_end, y_start, y_end)
+    joined_metric = 0.0
+    if wrt_pred != 0.0 and wrt_real != 0.0:
+        joined_metric = calculate_score_overlap(x_start, x_end, y_start, y_end)
+    return (wrt_pred, wrt_real, joined_metric)
+################################################################################################
+################################################################################################
+
+
+################################################################################################
+######################## helper functions for getting model predictions: ######################
 def patch_sequence(sequence, patch_size, overlap_step, patch_char):
-    interval_starts = [0]
-    interval_ends = [0]
+    interval_starts = [-1]
     patched_sequences = [sequence]
     patch = patch_char * patch_size
     last_patch_start_i = len(sequence) - patch_size + 1
@@ -107,10 +138,9 @@ def patch_sequence(sequence, patch_size, overlap_step, patch_char):
     for i in range(0, last_patch_start_i, overlap_step):
         patched_seq = sequence[:i] + patch + sequence[i+patch_size:]
         interval_starts.append(i)
-        interval_ends.append(i+patch_size)
         patched_sequences.append(patched_seq)
 
-    return interval_starts, interval_ends, patched_sequences
+    return interval_starts, patched_sequences
 
 
 def encode_sequence(seq):
@@ -125,30 +155,45 @@ def create_generator(list_of_arrays):
 
 
 def get_patch_predictions(model, sequence, patch_size, overlap_step, patch_char=PATCH_CHAR):
-    interval_starts, interval_ends, patched_sequences = patch_sequence(sequence, patch_size, overlap_step, patch_char)
+    interval_starts, patched_sequences = patch_sequence(sequence, patch_size, overlap_step, patch_char)
     encoded_sequences = [encode_sequence(_) for _ in patched_sequences]
+    del(patched_sequences)
     dataset = tf.data.Dataset.from_generator(lambda: create_generator(encoded_sequences), output_types= tf.float32)
     predictions = model.predict(dataset, verbose=0)
+    del(encoded_sequences)
     predictions = [_[0] for _ in predictions.tolist()]
-    return pd.DataFrame({'interval_start': interval_starts, 
-                         'interval_end': interval_ends, 
-                         'prediction': predictions})
+    return pd.DataFrame({'interval_start': interval_starts,
+                         'predictions': predictions})
 
 
-def calculate_one_seq_results(model, sequence, patches, overlap_step=1):
+def calculate_one_seq_results(model, sequence, real_start, real_end, patches, overlap_step=1):
     patches_len = len(patches)
     text = ''
-
+    
+    # TODO: refactor this part (concat all patched versions and predict for all at once, not for each patch_size)
     for i in range(patches_len):
         patch_size = patches[i]
         df_scores = get_patch_predictions(model, sequence, patch_size, overlap_step)
 
         # get index of the sequence which resulted in the lowest prediction score:
-        min_i = df_scores['prediction'].idxmin()
-        
-        # additional_intervals = calculate_additional_interval(df_scores)
-        text += f'{str(df_scores["prediction"].tolist())};{str(df_scores["interval_start"].tolist())};{str(df_scores["interval_end"].tolist())};{df_scores.iloc[min_i]["interval_start"]};{df_scores.iloc[min_i]["interval_end"]};{df_scores.iloc[min_i]["prediction"]};'
+        min_i = df_scores['predictions'].idxmin()
+
+        # if min_i == 0, the minimum prediction is the original sequence (not any of its patched versions)
+        if min_i != 0:
+            min_start = df_scores.iloc[min_i]["interval_start"]
+            min_end = df_scores.iloc[min_i]["interval_start"] + patch_size
+            overlap_pred, overlap_real, overlap = calculate_overlap_of_min_patch_with_core(min_start, min_end, real_start, real_end)
+        else:
+            min_start = -1
+            min_end = -1
+            overlap_pred, overlap_real, overlap = 0, 0, 0
+            print(f'Patching with patch_size={patch_size} did not results in any drop at all.')
+
+        text += f'{str(df_scores["predictions"].tolist())};{str(df_scores["interval_start"].tolist())};{min_start};{min_end};{df_scores.iloc[min_i]["predictions"]};{overlap_pred};{overlap_real};{overlap};'
+        del(df_scores)
     return text
+################################################################################################
+################################################################################################
 
 
 def define_arguments():
@@ -193,6 +238,8 @@ if __name__ == '__main__':
     print(f'The sequences from CSV file will be processed from index {start_index}')
     for i in range(start_index, len(data)):
         sequence = data[i][SEQ]
+        knot_start = int(data[i][KNOT_START])
+        knot_end = int(data[i][KNOT_END])
         print(f'[{i:3}/{len(data)}] Calculating results for sequence "{sequence[:10]}..."')
 
         # skip sequences that are too long
@@ -203,8 +250,8 @@ if __name__ == '__main__':
         if args.fix_length:
             sequence = fix_sequence_size(sequence)
         text = f'{data[i][SEQ_ID]};{sequence};{data[i][SEQ_LEN]};'
-        text += calculate_one_seq_results(model, sequence, patch_sizes)
-        text += f'{data[i][KNOT_START]};{data[i][KNOT_END]};{data[i][KNOT_LEN]};{data[i][FAMILY]}'
+        text += calculate_one_seq_results(model, sequence, knot_start, knot_end, patch_sizes)
+        text += f'{knot_start};{knot_end};{data[i][KNOT_LEN]};{data[i][FAMILY]}'
         
         # opening for each sequence so that the intermediate results don't get lost (but for the cost of slower computation)
         output_file = open(args.output_path, 'a')
