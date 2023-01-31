@@ -1,19 +1,22 @@
 # Evaluation of models on test dataset
 
+**Note**: M1 is already trained and evaluated on dataset v3, M2 and M3 are on v2
+
 |              M1              | Dataset size | Unknotted set size | Accuracy |   TPR  |   TNR  |
 |:----------------------------:|:------------:|:------------------:|:--------:|:------:|:------:|
-|              All             |     39758    |        19826       |  0.9717  | 0.9789 | 0.9644 |
-|             SPOUT            |     7791     |         674        |  0.9693  | 0.9938 | 0.7107 |
-|              TDD             |      644     |         33         |  0.9627  | 0.9869 | 0.5151 |
-|              DUF             |      771     |         463        |  0.9494  | 0.9350 | 0.9589 |
-|        AdoMet synthase       |     1789     |         299        |  0.9726  | 0.9866 | 0.9030 |
-|      Carbonic anhydrase      |     1587     |         584        |  0.9319  | 0.9621 | 0.8801 |
-|              UCH             |      508     |         171        |  0.8504  | 0.8131 | 0.9240 |
-|         ATCase/OTCase        |     3846     |        3402        |  0.9979  | 0.9955 | 0.9982 |
-|    ribosomal-mitochondrial   |      143     |         29         |  0.9301  | 0.9737 | 0.7586 |
-|           membrane           |     8293     |        1643        |  0.9641  | 0.9844 | 0.8819 |
-|              VIT             |     14060    |        12314       |  0.9827  | 0.9433 | 0.9883 |
-| biosynthesis of lantibiotics |      392     |         281        |  0.9209  | 0.8198 | 0.9609 |
+|              All             |     39412    |        19718       |  0.9787  | 0.9820 | 0.9755 |
+|             SPOUT            |     7371     |         550        |  0.9890  | 0.9956 | 0.9073 |
+|              TDD             |      612     |         24         |  0.9853  | 0.9915 | 0.8333 |
+|              DUF             |      736     |         429        |  0.9637  | 0.9617 | 0.9650 |
+|        AdoMet synthase       |     1794     |         240        |  0.9889  | 0.9929 | 0.9625 |
+|      Carbonic anhydrase      |     1531     |         539        |  0.9288  | 0.9536 | 0.8831 |
+|              UCH             |      477     |         125        |  0.9015  | 0.9716 | 0.7040 |
+|         ATCase/OTCase        |     3799     |        3352        |  0.9989  | 0.9955 | 0.9994 |
+|    ribosomal-mitochondrial   |      147     |         41         |  0.8776  | 0.9906 | 0.5854 |
+|           membrane           |     8309     |        1577        |  0.9730  | 0.9801 | 0.9429 |
+|              VIT             |     14347    |        12639       |  0.9812  | 0.9450 | 0.9861 |
+| biosynthesis of lantibiotics |      392     |         286        |  0.9235  | 0.8962 | 0.9336 |
+|   PGluconate dehydrogenase   |       1      |          0         |    1.0   |   1.0  |        |
 
 
 |              M2              | Dataset size | Unknotted set size | Accuracy |   TPR  |   TNR  |
