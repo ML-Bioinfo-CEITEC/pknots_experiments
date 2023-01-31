@@ -60,6 +60,8 @@ The newest processed version of the dataset can be found at [Hugging Face](https
 
 ### Dataset version list
 
+Version 3 - created by Pawel 24. 1., `david_all_knotted_NEW.csv.gz` (MD5 686718a9a699424cc9636876d8c4c178) and `david_all_unknotted_NEW.csv.gz` (MD5 0d5b56fee4a49ca71c3707d83267ad20), recumputed version with fixed problem with unknotted proteins that should be knotted
+
 Version 2 - updated by Eva 10. 1., based on Version 1 files, fixed duplication and added family names
 
 Version 1 - created by Pawel 4. 1., `david_all_knotted.csv.gz` (MD5 78dbab5c65422dcd7c52ffa6c427236d) and `david_all_unknotted.csv.gz` (MD5 57b822f2b93586d7d5685ccf09dcf537), with added PFAM and InterPro
