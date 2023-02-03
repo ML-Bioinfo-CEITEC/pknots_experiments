@@ -1,6 +1,6 @@
 # Evaluation of models on test dataset
 
-**Note**: M1 is already trained and evaluated on dataset v3, M2 and M3 are on v2
+**Note**: M1 and M3 are already trained and evaluated on dataset v3, M2 is on v2
 
 |              M1              | Dataset size | Unknotted set size | Accuracy |   TPR  |   TNR  |
 |:----------------------------:|:------------:|:------------------:|:--------:|:------:|:------:|
@@ -37,19 +37,18 @@
 
 |              M3              | Dataset size | Unknotted test size | Accuracy |   TPR  |   TNR  |
 |:----------------------------:|:------------:|:-------------------:|:--------:|:------:|:------:|
-|              All             |     30040    |        14959        |  0.9430  | 0.9746 | 0.9111 |
-|             SPOUT            |     7699     |         667         |  0.9480  | 0.9890 | 0.5157 |
-|              TDD             |      629     |          33         |  0.9523  | 0.9945 | 0.1818 |
-|              DUF             |      743     |         442         |  0.8977  | 0.9402 | 0.8688 |
-|        AdoMet synthase       |     1772     |         298         |  0.9300  | 0.9885 | 0.6409 |
-|      Carbonic anhydrase      |     1506     |         578         |  0.7742  | 0.9159 | 0.5467 |
-|              UCH             |      475     |         169         |  0.7560  | 0.9183 | 0.4615 |
-|         ATCase/OTCase        |     3814     |         3372        |  0.9919  | 0.9910 | 0.9920 |
-|    ribosomal-mitochondrial   |      106     |          29         |  0.7547  | 0.8571 | 0.4828 |
-|           membrane           |     5077     |         1234        |  0.9171  | 0.9706 | 0.7504 |
-|              VIT             |     8170     |         8091        |  0.9836  | 0.5316 | 0.9880 |
-| biosynthesis of lantibiotics |      46      |          44         |  0.6957  | 1.0    | 0.6818 |
-|         VIT,membrane         |      1       |          1          |  1.0     | -      | 1.0    |
+|              All             |     29717    |        14839        |  0.9518  | 0.9256 | 0.9778 |
+|             SPOUT            |     7282     |         546         |  0.9429  | 0.9477 | 0.8828 |
+|              TDD             |      602     |          24         |  0.9319  | 0.9349 | 0.8750 |
+|              DUF             |      694     |         411         |  0.8963  | 0.7703 | 0.9830 |
+|        AdoMet synthase       |     1781     |         239         |  0.9439  | 0.9501 | 0.9038 |
+|      Carbonic anhydrase      |     1460     |         534         |  0.7973  | 0.7451 | 0.8876 |
+|              UCH             |      432     |         121         |  0.8356  | 0.8553 | 0.7851 |
+|         ATCase/OTCase        |     3778     |         3331        |  0.9886  | 0.9217 | 0.9976 |
+|    ribosomal-mitochondrial   |      117     |          41         |  0.7863  | 0.8553 | 0.6585 |
+|           membrane           |     5127     |         1221        |  0.9395  | 0.9462 | 0.9181 |
+|              VIT             |     8399     |         8330        |  0.9935  | 0.4638 | 0.9978 |
+| biosynthesis of lantibiotics |      44      |          41         |  0.8409  | 0.6667 | 0.8537 |
 
 
 
