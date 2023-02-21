@@ -1,13 +1,11 @@
 # Evaluation of models on test dataset
 
-**Note**: M1 and M3 are already trained and evaluated on dataset v3, M2 is on v2
-
-|              M1              | Dataset size | Unknotted set size | Accuracy |   TPR  |   TNR  |
+|      M1 DistillProtBert      | Dataset size | Unknotted set size | Accuracy |   TPR  |   TNR  |
 |:----------------------------:|:------------:|:------------------:|:--------:|:------:|:------:|
 |              All             |     39412    |        19718       |  0.9787  | 0.9820 | 0.9755 |
 |             SPOUT            |     7371     |         550        |  0.9890  | 0.9956 | 0.9073 |
 |              TDD             |      612     |         24         |  0.9853  | 0.9915 | 0.8333 |
-|              DUF             |      736     |         429        |  0.9637  | 0.9617 | 0.9650 |
+|              DUF             |      716     |         429        |  0.9637  | 0.9617 | 0.9650 |
 |        AdoMet synthase       |     1794     |         240        |  0.9889  | 0.9929 | 0.9625 |
 |      Carbonic anhydrase      |     1531     |         539        |  0.9288  | 0.9536 | 0.8831 |
 |              UCH             |      477     |         125        |  0.9015  | 0.9716 | 0.7040 |
@@ -21,18 +19,19 @@
 
 |              M2              | Dataset size | Unknotted set size | Accuracy |   TPR  |   TNR  |
 |:----------------------------:|:------------:|:------------------:|:--------:|:------:|:------:|
-|              All             |     39758    |        19826       |  0.9466  | 0.9824 | 0.9107 |
-|             SPOUT            |     7791     |         674        |  0.9456  | 0.9864 | 0.5148 |
-|              TDD             |      644     |         33         |  0.9503  | 0.9820 | 0.3636 |
-|              DUF             |      771     |         463        |  0.8106  | 0.9740 | 0.7019 |
-|        AdoMet synthase       |     1789     |         299        |  0.9245  | 0.9879 | 0.6087 |
-|      Carbonic anhydrase      |     1587     |         584        |  0.8639  | 0.9771 | 0.6695 |
-|              UCH             |      508     |         171        |  0.8091  | 0.9644 | 0.5029 |
-|         ATCase/OTCase        |     3846     |        3402        |  0.9906  | 0.9887 | 0.9909 |
-|    ribosomal-mitochondrial   |      143     |         29         |  0.8671  | 0.9211 | 0.6552 |
-|           membrane           |     8293     |        1643        |  0.9217  | 0.9938 | 0.6439 |
-|              VIT             |     14060    |        12314       |  0.9759  | 0.9439 | 0.9804 |
-| biosynthesis of lantibiotics |      392     |         281        |  0.9311  | 0.9459 | 0.9253 |
+|              All             |     39412    |        19718       |  0.9690  | 0.9569 | 0.9811 |
+|             SPOUT            |     7371     |         550        |  0.9712  | 0.9815 | 0.8436 |
+|              TDD             |      612     |         24         |  0.9673  | 0.9796 | 0.6667 |
+|              DUF             |      716     |         429        |  0.9413  | 0.8955 | 0.9720 |
+|        AdoMet synthase       |     1794     |         240        |  0.9727  | 0.9755 | 0.9542 |
+|      Carbonic anhydrase      |     1531     |         539        |  0.8870  | 0.8619 | 0.9332 |
+|              UCH             |      477     |         125        |  0.8700  | 0.8892 |  0.816 |
+|         ATCase/OTCase        |     3799     |        3352        |  0.9932  | 0.9418 |   1.0  |
+|    ribosomal-mitochondrial   |      147     |         41         |  0.8163  | 0.8319 | 0.7805 |
+|           membrane           |     8309     |        1577        |  0.9740  | 0.9857 | 0.9239 |
+|              VIT             |     14347    |        12639       |  0.9742  | 0.8214 | 0.9948 |
+| biosynthesis of lantibiotics |      392     |         286        |  0.9388  | 0.8019 | 0.9895 |
+|   PGluconate dehydrogenase   |       1      |          0         |     0    |    0   |    -   |
 
 
 |              M3              | Dataset size | Unknotted test size | Accuracy |   TPR  |   TNR  |
