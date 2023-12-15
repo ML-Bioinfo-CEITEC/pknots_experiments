@@ -16,6 +16,14 @@ Libraries listed in [patching_env.yml](./patching_env.yml) (Exported using `cond
 $ conda env create -f patching_env.yml
 ```
 
+Or alternatively here is the list of used commands:
+```
+$ conda create -n patching_env --yes python=3.10 ipykernel nb_conda_kernels
+$ pip3 install torch --extra-index-url https://download.pytorch.org/whl/cu116
+$ pip3 install transformers datasets
+$ pip3 install transformers['torch']
+```
+
 ```
 $ source activate patching_env
 ```
@@ -25,8 +33,6 @@ $ source activate patching_env
 ```
 $ huggingface-cli login
 ```
-
-**Set `HF_USER_NAME` before running the script.**
 
 ## Run: 
 

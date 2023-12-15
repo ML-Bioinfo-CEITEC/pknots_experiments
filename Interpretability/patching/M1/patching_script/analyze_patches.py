@@ -23,6 +23,7 @@ The script displayes computation progress by printing out partial results.
 
 import argparse
 import torch
+print(torch.cuda.is_available())
 import pandas as pd
 import numpy as np
 from datetime import datetime
@@ -34,12 +35,6 @@ from datasets import load_metric, Features, Value
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support, recall_score
 from math import exp
 
-
-#########################################
-# TODO: set before running the script:  #
-#########################################
-HF_USER_NAME = 'roa7n'
-#########################################
 
 MODEL = 'EvaKlimentova/knots_AF_v4_50b' # previous: 'roa7n/knots_protbertBFD_alphafold'
 OVERLAP_STEP = 1
@@ -92,7 +87,7 @@ def patch_dataset(df, patch_size):
 
 def push_df_to_hf_hub(df, set_filter, family_filter, patch_size, other_specifiers=''):
     hf_dataset = Dataset.from_pandas(df)
-    hf_dataset.push_to_hub(f'{HF_USER_NAME}/patched_{set_filter}_f_{family_filter}_ps_{patch_size}_{other_specifiers}_v2023d')
+    hf_dataset.push_to_hub(f'patched_{set_filter}_f_{family_filter}_ps_{patch_size}_{other_specifiers}_v2023d')
     return hf_dataset
 
 
@@ -110,7 +105,7 @@ def tokenize_hf_dataset(hf_dataset, tokenizer):
 def get_predictions(hf_dataset, output_dir_path):
     tqdm.pandas()
     tokenizer = AutoTokenizer.from_pretrained(MODEL)
-    model = AutoModelForSequenceClassification.from_pretrained(MODEL)
+    model = AutoModelForSequenceClassification.from_pretrained(MODEL).cuda()
     tokenized_dataset = tokenize_hf_dataset(hf_dataset, tokenizer)
     
     # training_args = TrainingArguments(output_dir_path, fp16=True, per_device_eval_batch_size=50, report_to='none')  
@@ -307,6 +302,7 @@ if __name__ == '__main__':
     # 1. Generate patched versions of all train/ test ('set_filter') sequence for given family ('family_filter'):
     df_orig = get_data(input_hf_dataset, set_filter, family_filter)
     df_patched = patch_dataset(df_orig, patch_size)
+    family_filter = family_filter.replace('/', '')
     hf_dss_patched = push_df_to_hf_hub(df_patched, set_filter, family_filter, patch_size)
     
     # 2. Get predictions for patched sequences:
