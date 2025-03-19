@@ -1,5 +1,6 @@
 # Knotted Proteins Experiments
 
+Data and experiments related to the [Knot or not? Identifying unknotted proteins in knotted families with sequence-based Machine Learning model](https://doi.org/10.1002/pro.4998) paper
 
 ## Content description
 
